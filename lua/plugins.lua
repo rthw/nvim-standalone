@@ -299,6 +299,11 @@ return {
 				if not ok then
 					return ok, char
 				end
+				-- getcharstr() encodes special keys with K_SPECIAL (0x80),
+				-- not UTF-8. Translating those bytes corrupts e.g. <Down> into "kd".
+				if char:find(string.char(0x80), 1, true) then
+					return ok, char
+				end
 				local translate_ok, translated = pcall(require("langmapper.utils").translate_keycode, char, "default", "ru")
 				if translate_ok and translated and translated ~= "" then
 					return ok, translated
